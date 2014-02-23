@@ -1,0 +1,24 @@
+<apex:page showHeader="true" sidebar="true" controller="tagMigration">
+	<!-- Tell user to activate Topics for Objects -->
+	<h1 style="font-size:20px;">Public Tags to Chatter Topics Migration</h1><br /><br />
+	<span>Make sure to activate "Topics for Objects" on all objects you would like to migrate tags -&gt; Chatter Topics.<br /><br /> To do this go to Setup -&gt; Customizer -&gt; Topics -&gt; Topics For Objects, select the objects you would like to enable/convert, check the "Enable topics for &lt;Object Name&gt;" checkbox, then click the Save button.
+	</span>
+	<br /><br />
+	<span><strong>Current Tag Objects are:</strong> {!HTMLENCODE(tagEnabledObjects)}</span>
+
+	<br /><br />
+
+	<span><strong>This tool will be unable to convert Public Tags to Chatter topics on objects that are not Topics for Objects enabled</strong></span>
+	<br /><br />	
+	<apex:form>
+		<apex:commandButton action="{!executeBatch}" value="Start Public Tags to Topics Migration" id="excecuteBatchButton"/>
+	</apex:form>
+	
+	<apex:outputPanel rendered="{!batchId!=null}">
+		<br />
+		<span>Your Migration is running. To check on it view the status of job id <strong>{!HTMLENCODE(batchId)}</strong> at:  <apex:outputLink target="_blank" value="{!HTMLENCODE(apexJobUrl)}">Apex Jobs</apex:outputLink> ( Setup -&gt; Monitoring -&gt; Apex Jobs).
+		<br /><br />
+		You will receive an email when the migration is complete.</span>
+	</apex:outputPanel>
+
+</apex:page>

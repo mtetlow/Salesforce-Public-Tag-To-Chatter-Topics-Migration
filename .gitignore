@@ -1,0 +1,4 @@
+/config/
+/*.DS_Store
+/tagmigration.sublime-project
+/tagmigration.sublime-workspace
