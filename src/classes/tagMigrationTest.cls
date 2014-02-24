@@ -1,7 +1,8 @@
 @isTest
 private class tagMigrationTest {
 	
-	@isTest static void testConvertingTagsObj() {
+	//Have to use SeeAllData = true to see *anything* in the TagDefinition Object
+	@isTest (SeeAllData=true) static void testConvertingTagsObj() {
 		//Find objects that are tag objects in the org so we can add some tags
 		List<String> tagObjNames = new List<String>();
 		Map<String,Schema.SObjectType> globalDesc = Schema.getGlobalDescribe();
@@ -45,6 +46,7 @@ private class tagMigrationTest {
 			//Insert test tags
 			List<sObject> tagsToInsert = new List<sObject>();
 			Set<String> tagNameSet = new Set<String>();
+			Map<String,Set<Id>> tagNameToRecordIdSet = new Map<String,Set<Id>>();
 			for(String tagObjName : tagObjNames){
 				Schema.SObjectType tagObjType = globalDesc.get(tagObjName);
 				List<sObject> recordsForTagType = tagObjNameToRecordList.get(tagObjName);
@@ -58,27 +60,37 @@ private class tagMigrationTest {
 						Id recordId = Id.valueOf(String.valueOf(recordsForTagType[i/10].get('Id')));
 						tag.put('ItemId',recordId);
 						tagsToInsert.add(tag);
+						if(tagNameToRecordIdSet.get(nameStr)==null){tagNameToRecordIdSet.put(nameStr,new Set<Id>());}
+						tagNameToRecordIdSet.get(nameStr).add(recordId);
 					}
 				}
 				
 			}
 			
+			insert tagsToInsert;
 			
+			List<String> nameList = new List<String>();
+			nameList.addAll(tagNameSet);
+			String insertedTagNameWrappedString = '\''+String.join(nameList, '\',\'')+'\'';
+
 			//Execute migration
 			Test.startTest();
-			insert tagsToInsert;
-			List<TagDefinition> tags = [SELECT Id, IsDeleted, LastModifiedById, Name, SystemModstamp, Type FROM TagDefinition];
-			system.debug('tags size '+tags.size());
 			tagMigrationBatch migrationBatch = new tagMigrationBatch();
+			//Have to pass a string as the set var would be out of scope
+			migrationBatch.query = 'SELECT Id FROM TagDefinition WHERE Name IN ('+insertedTagNameWrappedString+')';
 			Database.executeBatch(migrationBatch);
 			Test.stopTest();
 
 			//Ensure topics are created
-			List<Topic> topics = [SELECT Id,Name FROM Topic WHERE Name IN :tagNameSet];
-			//This would work great if we could query what objects are chatter topics enabled. If the objects aren't chatter topics enabled the topic assignment inserts fail
-			//system.assertEquals(topics.size(),tagNameSet.size());
+			Map<Id,Topic> topics = new Map<Id,Topic>([SELECT Id,Name FROM Topic WHERE Name IN :tagNameSet]);
+			system.assertEquals(topics.keySet().size(),tagNameSet.size());
 
-			//Ensure topics are assigned
+			//Ensure topics are assigned, we won't fail if topics assignments are not created due to Chatter for Topics not being enabled
+			List<TopicAssignment> topicAssignments = [SELECT EntityId, TopicId, Topic.Name FROM topicAssignment WHERE TopicId IN :topics.keySet()];
+			for(TopicAssignment topicAssign : topicAssignments){
+				Set<Id> recordIdSet = tagNameToRecordIdSet.get(topicAssign.Topic.Name);
+				system.assert(recordIdSet.contains(topicAssign.EntityId));
+			}
 		}
 	}
 

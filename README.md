@@ -36,10 +36,8 @@ Installation Problems
  
 Issues
 --------------
- - Test class is weak. There are a few reasons why
-   - Can't find a way to see if Chatter Topics for Objects is enabled on a specific object through Apex. This means we can't be sure what tags should actually be converting. A possible work around for this could be to make a custom setting to determine what objects are available to Chatter topics via catching exceptions
-   - For some reason the TagDefinition object is consistently empty in @isTest methods. Even after inserting tags directly above querying the TagDefinition object.
- - It would be nice to provide the user with a mapping of Tag Objects -> Objects and display if they are Chatter Topic enabled or not. Resolution would be the same as first test class subissue.
+ - For some reason the TagDefinition object is consistently empty in @isTest methods if SeeAllData != true, even with tags created inside the test method.
+ - It would be nice to provide the user with a mapping of Tag Objects -> Objects and display if they are Chatter Topic enabled or not. Resolution would be to figure out how to describe if Chatter For Objects is enabled on a specific sObject.
 
 License
 ----

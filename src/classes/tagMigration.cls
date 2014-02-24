@@ -22,6 +22,7 @@ public with sharing class tagMigration {
 
 	public void setPublicTagInfo(){
 		List<String> tagObjNames = new List<String>();
+		List<String> tagEnabledObjLabels = new List<String>();
 		Map<String,Schema.SObjectType> globalDesc = Schema.getGlobalDescribe();
 		for(String objName : globalDesc.keySet()){
 			if(objName.endsWith('tag')){
@@ -39,18 +40,12 @@ public with sharing class tagMigration {
 					tagRecordCount = tagRecordCount+Integer.valueOf(groupedResults[0].get('expr0'));
 				}
 			}
-		}
-		publicTagCount=tagRecordCount;
-
-		List<String> tagEnabledObjLabels = new List<String>();
-		for(String objName : tagObjNames){
 			Schema.SObjectType tagObjType = globalDesc.get(objName);
 			Schema.DescribeSObjectResult objDesc = tagObjType.getDescribe();
 			tagEnabledObjLabels.add(objDesc.getLabel());
 		}
-
+		publicTagCount=tagRecordCount;
 		tagEnabledObjects=String.join(tagEnabledObjLabels,', ');
-		
 	}
 
 	public void executeBatch(){
