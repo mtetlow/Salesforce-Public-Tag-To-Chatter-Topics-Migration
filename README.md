@@ -1,7 +1,7 @@
 Salesforce Public Tags to Chatter Topics Migration Tool
 =========
 
-This tool provides a Batch Apex class which converts Public Tags associated to records in Salesforce to Chatter Topics for Objects.
+This tool provides a Batch Apex class which converts Public Tags associated to records in Salesforce to Chatter Topics for Objects (Spring '14 / Version 30.0 feature).
 
 Components
 --
@@ -24,11 +24,12 @@ git clone this repo and deploy with your favorite Salesforce apex deployment too
 Usage
 --------------
   - Install the components via the unmanaged package or a deploy to your org
-  - Navigate to https://<instance>.salesforce.com/apex/tagMigration
+  - Navigate to https://instance.salesforce.com/apex/tagMigration
   - Examine the objects you currently have tagging enabled for, enable Topics for Objects on the objects you would like to migrate.
   - Click the "Start Public Tags to Topics Migration" button
   - Wait for emails saying the proccess is complete
   - Check out your new topics!
+  - Uninstall the package at Setup -> Installed Packages
 
 Installation Problems
 --------------
