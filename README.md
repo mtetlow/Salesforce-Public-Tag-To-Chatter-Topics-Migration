@@ -16,7 +16,7 @@ Installation
 --------------
 
 #####Option 1:
-Install the unmanaged package at: https://login.salesforce.com/packaging/installPackage.apexp?p0=04ti0000000H1ei
+Install the unmanaged package at: https://login.salesforce.com/packaging/installPackage.apexp?p0=04ti0000000H2Cy
 #####Option 2:
 git clone this repo and deploy with your favorite Salesforce apex deployment tool
 

@@ -31,7 +31,7 @@ public with sharing class tagMigration {
 		}
 		Integer tagRecordCount = 0;
 		Integer totalQueryLimit = Limits.getLimitQueries();
-		Integer queriesAfter = 1;
+		Integer queriesAfter = 2;
 		for(String objName : tagObjNames){
 			if(Limits.getQueries() <= totalQueryLimit-queriesAfter){
 				String objQuery = 'SELECT COUNT(Id) FROM '+objName+' WHERE Type=\'Public\'';
